@@ -61,7 +61,7 @@
 - (IBAction)getStats:(id)sender {
     self.enteredPlayerName = self.playerName.text;
     self.statResults.text = @"";
-    NSString *restCallString = [NSString stringWithFormat:@"http://api.espn.com/v1/sports/football/nfl/athletes/1?_accept=text/JSON&apikey=b9xt4kdk7gfn9bztw6364etd"];
+    NSString *restCallString = [NSString stringWithFormat:@"http://api.espn.com/v1/sports/football/nfl/athletes/10001?_accept=text/JSON&apikey=b9xt4kdk7gfn9bztw6364etd"];
     
     NSURL *restURL = [NSURL URLWithString:restCallString];
     NSURLRequest *restRequest = [NSURLRequest requestWithURL:restURL];
@@ -117,9 +117,23 @@
     NSArray* sportsArray = [dictionary objectForKey:@"sports"];
     NSLog(@"%u", [sportsArray count]);
     NSDictionary* sportsDict = [sportsArray objectAtIndex:0];
-    for (id key in [sportsDict allKeys]){
+    /*for (id key in [sportsDict allKeys]){
         NSLog(@"Key/Values: %@ > %@", key, [sportsDict valueForKey:key]);
+    }*/
+    
+    //Write json response to output label sports>leagues>athletes>injuryStatus
+    NSString *injured = nil;
+    
+    for(NSString *key in [sportsDict allKeys]){
+
+        injured = [sportsDict objectForKey:@"leagues"];
     }
+    
+        //self.statResults.text = @"Thank you for your submission";
+        NSLog(@"Shit: %@",injured);
+    
+        self.statResults.text = injured;
+    
     
     currentConnection = nil;
 }
