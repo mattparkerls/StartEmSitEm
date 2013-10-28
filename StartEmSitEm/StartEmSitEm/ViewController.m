@@ -61,7 +61,7 @@
 - (IBAction)getStats:(id)sender {
     self.enteredPlayerName = self.playerName.text;
     self.statResults.text = @"";
-    NSString *restCallString = [NSString stringWithFormat:@"http://api.espn.com/v1/sports/football/nfl/athletes/1?_accept=text/xml&apikey=b9xt4kdk7gfn9bztw6364etd"];
+    NSString *restCallString = [NSString stringWithFormat:@"http://api.espn.com/v1/sports/football/nfl/athletes/1?_accept=text/JSON&apikey=b9xt4kdk7gfn9bztw6364etd"];
     
     NSURL *restURL = [NSURL URLWithString:restCallString];
     NSURLRequest *restRequest = [NSURLRequest requestWithURL:restURL];
@@ -95,7 +95,7 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    // create our XML parser with the return data from the connection
+    /*// create our XML parser with the return data from the connection
     xmlParser = [[NSXMLParser alloc] initWithData:self.apiReturnJSONData];
     
     // setup the delgate (see methods below)
@@ -103,7 +103,24 @@
     [xmlParser setDelegate:self];
     
     // start parsing. The delgate methods will be called as it is iterating through the file.
-    [xmlParser parse];
+    [xmlParser parse];*/
+    
+    NSString* dataString = [[NSString alloc] initWithData:self.apiReturnJSONData encoding:NSASCIIStringEncoding];
+    NSLog(@"%@", dataString);
+    
+    NSDictionary* dictionary = [NSJSONSerialization JSONObjectWithData:self.apiReturnJSONData options:NSJSONReadingAllowFragments error:nil];
+    
+    for (id key in [dictionary allKeys]){
+        NSLog(@"Keys: %@", key);
+    }
+    
+    NSArray* sportsArray = [dictionary objectForKey:@"sports"];
+    NSLog(@"%u", [sportsArray count]);
+    NSDictionary* sportsDict = [sportsArray objectAtIndex:0];
+    for (id key in [sportsDict allKeys]){
+        NSLog(@"Key/Values: %@ > %@", key, [sportsDict valueForKey:key]);
+    }
+    
     currentConnection = nil;
 }
 
@@ -141,7 +158,7 @@
     
 }
 
--(void)parserDidEndDocument:(NSXMLParser *)parser {
+/*-(void)parserDidEndDocument:(NSXMLParser *)parser {
     
     // Determine what we are going to display in the label
     if([self.hygieneResult isEqualToString:@"Spam Trap"])
@@ -161,6 +178,6 @@
     }
     
     self.apiReturnJSONData = nil;
-}
+}*/
 
 @end
